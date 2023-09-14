@@ -57,10 +57,10 @@ export default function Home() {
 				<div className="mx-auto max-w-lg p-4">
 					<div className="flex items-center justify-center gap-20 py-24 text-3xl font-semibold text-white">
 						<div className="flex w-28 items-center gap-2">
-							<Flag className="h-12 w-12" /> {msGameState.flagsLeft}
+							<Flag style={{ width: "3rem", height: "3rem" }} /> {msGameState.flagsLeft}
 						</div>
 						<div className={clsx("flex w-32 items-center gap-2", !stopwatch.isRunning && "text-white/40")}>
-							<Timer className="h-12 w-12" /> {formatTime(stopwatch.time)}
+							<Timer style={{ width: "3rem", height: "3rem" }} /> {formatTime(stopwatch.time)}
 						</div>
 					</div>
 					{(msGameState.stage === "won" || msGameState.stage === "lost") && (

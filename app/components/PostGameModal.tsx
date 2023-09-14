@@ -16,11 +16,11 @@ export default function PostGameModal({
 		<div className="flex h-80 flex-col rounded-3xl bg-sky-600 p-4 shadow-lg">
 			<div className="flex flex-1 items-center justify-around text-4xl font-semibold text-white">
 				<div className="flex flex-col items-center gap-4">
-					<Timer className="h-14 w-14" />
+					<Timer style={{ width: "3.5rem", height: "3.5rem" }} />
 					<div>{score === null || outcome === "lost" ? "---" : formatTime(score)}</div>
 				</div>
 				<div className="flex flex-col items-center gap-4">
-					<EmojiEvents className="h-14 w-14" />
+					<EmojiEvents style={{ width: "3.5rem", height: "3.5rem" }} />
 					<div>{highScore === null ? "---" : formatTime(highScore)}</div>
 				</div>
 			</div>
