@@ -34,13 +34,18 @@ export default function Tile({
 
 	const isElevated = tile.state === "flagged" || tile.state === "unflagged";
 
+	/**
+	 * width and height of a tile, in `vh`
+	 */
+	const tileSize = 100 / BOARD_HEIGHT;
+
 	return (
 		<div
 			className="group relative leading-none"
 			style={{
-				width: `${100 / BOARD_HEIGHT}vh`,
-				height: `${100 / BOARD_HEIGHT}vh`,
-				fontSize: `${80 / BOARD_HEIGHT}vh`,
+				width: `${tileSize}vh`,
+				height: `${tileSize}vh`,
+				fontSize: `${0.8 * tileSize}vh`,
 			}}
 		>
 			{isElevated && <div className="absolute inset-0 z-10 [box-shadow:_3px_4px_5px_#0005]" />}
@@ -81,8 +86,9 @@ export default function Tile({
 			<div className={clsx("pointer-events-none absolute inset-0", isElevated && "z-20")}>
 				{(tile.state === "flagged" || tile.state === "flagged incorrectly") && (
 					<Flag
+						style={{ width: `${tileSize}vh`, height: `${tileSize}vh` }}
 						className={clsx(
-							"h-full w-full scale-100 text-red-600 transition-all group-hover:scale-90",
+							"scale-100 text-red-600 transition-transform group-hover:scale-90",
 							tile.state === "flagged incorrectly" && "opacity-80"
 						)}
 					/>
