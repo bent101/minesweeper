@@ -6,7 +6,6 @@ import { Flag } from "@mui/icons-material";
 
 export default function Home() {
 	const [msGameState, dispatch] = useImmerReducer(msReducer, newMsGame());
-	const timer = useTimer();
 
 	function leftClick(row: number, col: number) {
 		const { state } = msGameState.board[row][col];

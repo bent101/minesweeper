@@ -2,7 +2,7 @@
 
 import { Flag, Timer } from "@mui/icons-material";
 import { clsx } from "clsx";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useImmerReducer } from "use-immer";
 import useLocalStorage from "use-local-storage";
 import Board from "./components/Board";
@@ -36,9 +36,9 @@ export default function Home() {
 		}
 	}, [msGameState.stage, stopwatch, highScore, setHighScore]);
 
-	function newGame() {
+	const newGame = useCallback(() => {
 		dispatch({ type: "new game" });
-	}
+	}, [dispatch]);
 
 	useEffect(() => {
 		function handleKeydown(this: Window, event: KeyboardEvent) {
@@ -47,7 +47,7 @@ export default function Home() {
 
 		window.addEventListener("keydown", handleKeydown);
 		return () => window.removeEventListener("keydown", handleKeydown);
-	}, []);
+	}, [newGame]);
 
 	return (
 		<div className="flex items-stretch">
