@@ -77,7 +77,7 @@ export default function Tile({
 			>
 				{(tile.state === "revealed" || tile.state === "clicked mine" || tile.state === "flagged incorrectly") &&
 					(tile.type === "mine" ? (
-						<Brightness5 className="h-full w-full scale-75" />
+						<Brightness5 style={{ width: `${tileSize}vh`, height: `${tileSize}vh` }} className="scale-75" />
 					) : (
 						tile.type !== 0 && tile.type
 					))}
