@@ -1,6 +1,7 @@
 import { Brightness5, Flag } from "@mui/icons-material";
 import { BOARD_HEIGHT, MsTile } from "../lib/minesweeper";
 import { clsx } from "clsx";
+import { useState } from "react";
 
 export default function Tile({
 	board,
@@ -17,6 +18,7 @@ export default function Tile({
 }) {
 	const tile = board[r][c];
 	const isLightSquare = (r + c) % 2 === 1;
+	const [hovering, setHovering] = useState(false);
 
 	const textColor =
 		tile.type === "mine"
@@ -41,6 +43,7 @@ export default function Tile({
 
 	return (
 		<div
+			tabIndex={0}
 			className="group relative leading-none"
 			style={{
 				width: `${tileSize}vh`,
@@ -58,7 +61,15 @@ export default function Tile({
 						onRightClick();
 					}
 				}}
-				onContextMenu={(e) => e.preventDefault()}
+				// onMouseOver={() => setHovering(true)}
+				// onMouseOut={() => setHovering(false)}
+				onKeyDown={(e) => {
+					console.log("tile keydown");
+				}}
+				onContextMenu={(e) => {
+					e.preventDefault();
+					// onRightClick();
+				}}
 				className={clsx(
 					"absolute inset-0 grid place-items-center font-semibold",
 					isElevated && "z-20",

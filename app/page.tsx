@@ -13,9 +13,7 @@ import { formatTime } from "./lib/utils";
 
 export default function Home() {
 	const [msGameState, dispatch] = useImmerReducer(msReducer, newMsGame());
-
 	const [highScore, setHighScore] = useLocalStorage<number | null>("highScore", null);
-
 	const stopwatch = useStopwatch();
 
 	useEffect(() => {
@@ -42,11 +40,32 @@ export default function Home() {
 
 	useEffect(() => {
 		function handleKeydown(this: Window, event: KeyboardEvent) {
-			if (event.code === "KeyR") newGame();
+			switch (event.code) {
+				case "KeyR": {
+					newGame();
+					break;
+				}
+				case "KeyD": {
+					dispatchEvent(new MouseEvent("mousedown", { button: 0, bubbles: true, cancelable: true }));
+					break;
+				}
+				case "KeyF": {
+					dispatchEvent(new MouseEvent("mousedown", { button: 2, bubbles: true, cancelable: true }));
+					break;
+				}
+			}
+		}
+
+		function handleMouseDown(this: Window, event: MouseEvent) {
+			console.log(event.button);
 		}
 
 		window.addEventListener("keydown", handleKeydown);
-		return () => window.removeEventListener("keydown", handleKeydown);
+		window.addEventListener("mousedown", handleMouseDown);
+		return () => {
+			window.removeEventListener("keydown", handleKeydown);
+			window.removeEventListener("mousedown", handleMouseDown);
+		};
 	}, [newGame]);
 
 	return (
