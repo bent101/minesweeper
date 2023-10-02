@@ -28,9 +28,11 @@ export function useStopwatch() {
 		setTime(0);
 	}
 
-	// stop on dismount to prevent a memory leak
 	useEffect(() => {
-		return stop;
+		// on dismount:
+		return () => {
+			clearInterval(intervalRef.current);
+		};
 	}, []);
 
 	return { time, isRunning, start, stop, reset };

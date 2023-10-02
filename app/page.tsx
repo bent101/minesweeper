@@ -102,7 +102,7 @@ export default function Home() {
 						/>
 						<Link
 							href={"/lb"}
-							className="mx-auto block w-max self-end text-2xl font-bold text-white underline underline-offset-4"
+							className="mx-auto block w-max cursor-pointer self-end text-2xl font-bold text-white underline underline-offset-4"
 						>
 							Leaderboard
 						</Link>

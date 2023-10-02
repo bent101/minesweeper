@@ -36,7 +36,7 @@ export default async function Page() {
 			<div className="sticky inset-x-0 top-0 bg-green-800 p-4">
 				<Link
 					href="/"
-					className="inline-block rounded-full px-6 py-3 text-2xl font-semibold text-white hover:bg-white/10"
+					className="inline-block cursor-pointer rounded-full px-6 py-3 text-2xl font-semibold text-white hover:bg-white/10"
 				>
 					← Back to game
 				</Link>
