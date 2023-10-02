@@ -16,7 +16,7 @@ export default async function Page() {
 							id: true,
 						},
 						orderBy: { timeInMs: "asc" },
-						take: 100,
+						take: 50,
 				  })
 				: prisma.leaderboardEntry.findMany({
 						select: {
@@ -26,7 +26,7 @@ export default async function Page() {
 						},
 						where: { difficulty: leaderboard },
 						orderBy: { timeInMs: "asc" },
-						take: 100,
+						take: 50,
 				  })
 		)
 	);

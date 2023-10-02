@@ -13,16 +13,16 @@ export default function DifficultySwitcher({
 	curDifficulty: Difficulty;
 }) {
 	return (
-		<div className="flex items-center overflow-clip rounded-full font-extrabold">
+		<div className="flex gap-2 text-lg font-semibold">
 			{difficulties.map((difficulty) => (
 				<button
 					key={difficulty}
 					onClick={() => dispatch({ type: "new game", difficulty })}
 					className={clsx(
-						"flex-1 py-4",
-						curDifficulty === difficulty
-							? "bg-green-100 text-green-700"
-							: "bg-green-700 text-green-100"
+						"rounded-full px-6 py-2",
+						difficulty === curDifficulty
+							? "bg-white text-green-800"
+							: "bg-transparent text-white hover:bg-white/10"
 					)}
 				>
 					{toTitleCase(difficulty)}

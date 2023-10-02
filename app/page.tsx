@@ -78,15 +78,20 @@ export default function Home() {
 				/>
 			</div>
 
-			<aside className="flex flex-col gap-24 py-24">
-				<div className="flex items-center justify-center gap-20 text-3xl font-semibold text-white">
-					<div className="flex w-28 items-center gap-2">
+			<aside className="flex flex-col items-center gap-8 py-24">
+				<DifficultySwitcher
+					dispatch={dispatch}
+					curDifficulty={msGameState.difficulty}
+				/>
+
+				<div className="flex items-center justify-center gap-4 text-xl font-semibold text-white">
+					<div className="flex w-24 items-center gap-2">
 						<Flag style={{ width: "3rem", height: "3rem" }} />{" "}
 						{msGameState.flagsLeft}
 					</div>
 					<div
 						className={clsx(
-							"flex w-48 items-center gap-2",
+							"flex w-36 items-center gap-2",
 							!stopwatch.isRunning && "text-white/40"
 						)}
 					>
@@ -94,20 +99,13 @@ export default function Home() {
 						{formatDuration(stopwatch.time)}
 					</div>
 				</div>
-				{msGameState.stage === "start" && (
-					<>
-						<DifficultySwitcher
-							dispatch={dispatch}
-							curDifficulty={msGameState.difficulty}
-						/>
-						<Link
-							href={"/lb"}
-							className="mx-auto block w-max cursor-pointer self-end text-2xl font-bold text-white underline underline-offset-4"
-						>
-							Leaderboard
-						</Link>
-					</>
-				)}
+
+				<Link
+					href={"/lb"}
+					className="inline-block cursor-pointer pt-16 text-lg font-bold text-white underline underline-offset-4"
+				>
+					Leaderboard
+				</Link>
 				{(msGameState.stage === "won" ||
 					msGameState.stage === "lost") && (
 					<PostGameModal
