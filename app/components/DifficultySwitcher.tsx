@@ -2,8 +2,8 @@ import { Dispatch } from "react";
 import { MsAction } from "../lib/minesweeper";
 import { Difficulty } from "@prisma/client";
 import clsx from "clsx";
-
-const difficulties: Difficulty[] = ["EASY", "MEDIUM", "HARD"];
+import { difficulties } from "../lib/globals";
+import { toTitleCase } from "../lib/utils";
 
 export default function DifficultySwitcher({
 	dispatch,
@@ -25,7 +25,7 @@ export default function DifficultySwitcher({
 							: "bg-green-700 text-green-100"
 					)}
 				>
-					{difficulty[0] + difficulty.slice(1).toLowerCase()}
+					{toTitleCase(difficulty)}
 				</button>
 			))}
 		</div>

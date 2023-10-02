@@ -6,7 +6,8 @@ export function getIndexedNeighbors<T>(arr: T[][], r: number, c: number) {
 			if (dr === 0 && dc === 0) continue;
 			const nr = r + dr;
 			const nc = c + dc;
-			if (nr >= 0 && nr < arr.length && nc >= 0 && nc < arr[0].length) ret.push({ val: arr[nr][nc], nr, nc });
+			if (nr >= 0 && nr < arr.length && nc >= 0 && nc < arr[0].length)
+				ret.push({ val: arr[nr][nc], nr, nc });
 		}
 	}
 	return ret;
@@ -32,7 +33,7 @@ export function shuffledArray<T>(array: T[]): T[] {
 	return array;
 }
 
-export function formatDuration(timeInMs: number) {
+export function formatDuration(timeInMs: number): string {
 	const formattedDuration = new Intl.DateTimeFormat("en-US", {
 		minute: "2-digit",
 		second: "2-digit",
@@ -43,7 +44,14 @@ export function formatDuration(timeInMs: number) {
 	return formattedDuration;
 }
 
-// Example usage:
-const durationInMilliseconds = 125432;
-const formattedDuration = formatDuration(durationInMilliseconds);
-console.log(formattedDuration); // Output: "02:05.432"
+export function toTitleCase(input: string): string {
+	return input.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+export function formatDate(date: Date): string {
+	return new Date(date).toLocaleDateString("en-us", {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+	});
+}

@@ -11,6 +11,7 @@ import { msReducer, newMsGame } from "./lib/minesweeper";
 import { useStopwatch } from "./lib/stopwatch";
 import { formatDuration } from "./lib/utils";
 import DifficultySwitcher from "./components/DifficultySwitcher";
+import Link from "next/link";
 
 export default function Home() {
 	const [msGameState, dispatch] = useImmerReducer(
@@ -68,7 +69,7 @@ export default function Home() {
 	}, [newGame]);
 
 	return (
-		<div className="flex h-screen items-stretch bg-green-800 px-16">
+		<div className="flex h-screen items-stretch px-16">
 			<div className="grid flex-1 place-items-center">
 				<Board
 					msGameState={msGameState}
@@ -77,8 +78,8 @@ export default function Home() {
 				/>
 			</div>
 
-			<aside>
-				<div className="flex items-center justify-center gap-20 py-24 text-3xl font-semibold text-white">
+			<aside className="flex flex-col gap-24 py-24">
+				<div className="flex items-center justify-center gap-20 text-3xl font-semibold text-white">
 					<div className="flex w-28 items-center gap-2">
 						<Flag style={{ width: "3rem", height: "3rem" }} />{" "}
 						{msGameState.flagsLeft}
@@ -94,10 +95,18 @@ export default function Home() {
 					</div>
 				</div>
 				{msGameState.stage === "start" && (
-					<DifficultySwitcher
-						dispatch={dispatch}
-						curDifficulty={msGameState.difficulty}
-					/>
+					<>
+						<DifficultySwitcher
+							dispatch={dispatch}
+							curDifficulty={msGameState.difficulty}
+						/>
+						<Link
+							href={"/lb"}
+							className="mx-auto block w-max self-end text-2xl font-bold text-white underline underline-offset-4"
+						>
+							Leaderboard
+						</Link>
+					</>
 				)}
 				{(msGameState.stage === "won" ||
 					msGameState.stage === "lost") && (

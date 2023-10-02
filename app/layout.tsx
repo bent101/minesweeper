@@ -6,13 +6,19 @@ export const metadata: Metadata = {
 	description: "Play minesweeper online",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	return (
 		<html lang="en">
 			<head>
 				<meta name="darkreader-lock" />
 			</head>
-			<body className="h-screen select-none">{children}</body>
+			<body className="h-screen select-none bg-green-800">
+				{children}
+			</body>
 		</html>
 	);
 }
