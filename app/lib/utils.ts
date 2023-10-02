@@ -16,15 +16,6 @@ export function getNeighbors<T>(arr: T[][], r: number, c: number) {
 	return getIndexedNeighbors(arr, r, c).map(({ val }) => val);
 }
 
-export function formatTime(seconds: number) {
-	const minutes = Math.floor(seconds / 60);
-	const remainingSeconds = seconds % 60;
-
-	const formattedSeconds = String(remainingSeconds).padStart(2, "0");
-
-	return `${minutes}:${formattedSeconds}`;
-}
-
 /**
  * shuffles `array` in place
  */
@@ -40,3 +31,19 @@ export function shuffledArray<T>(array: T[]): T[] {
 
 	return array;
 }
+
+export function formatDuration(timeInMs: number) {
+	const formattedDuration = new Intl.DateTimeFormat("en-US", {
+		minute: "2-digit",
+		second: "2-digit",
+		fractionalSecondDigits: 1,
+		timeZone: "UTC",
+	}).format(new Date(timeInMs));
+
+	return formattedDuration;
+}
+
+// Example usage:
+const durationInMilliseconds = 125432;
+const formattedDuration = formatDuration(durationInMilliseconds);
+console.log(formattedDuration); // Output: "02:05.432"

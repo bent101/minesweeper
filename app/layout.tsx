@@ -12,9 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<head>
 				<meta name="darkreader-lock" />
 			</head>
-			<body className="h-screen select-none">
-				<main>{children}</main>
-			</body>
+			<body className="h-screen select-none">{children}</body>
 		</html>
 	);
 }

@@ -1,32 +1,52 @@
+import { Difficulty } from "@prisma/client";
+import { addLeaderboardEntry } from "./actions";
 import { getIndexedNeighbors, getNeighbors, shuffledArray } from "./utils";
-
-const BOARD_WIDTH = 24;
-export const BOARD_HEIGHT = 20;
-const NUM_MINES = 99;
 
 export type MsTile = {
 	type: "mine" | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-	state: "unflagged" | "flagged" | "revealed" | "flagged incorrectly" | "clicked mine";
+	state:
+		| "unflagged"
+		| "flagged"
+		| "revealed"
+		| "flagged incorrectly"
+		| "clicked mine";
 };
 
 export type MsAction =
-	| { type: "reveal tile"; row: number; col: number }
-	| { type: "toggle flag"; row: number; col: number }
-	| { type: "start"; row: number; col: number }
-	| { type: "new game" };
+	| { type: "reveal tile"; row: number; col: number; timestampInMs: number }
+	| { type: "toggle flag"; row: number; col: number; timestampInMs: number }
+	| { type: "start"; row: number; col: number; timestampInMs: number }
+	| { type: "new game"; difficulty: Difficulty };
 
 export type MsGameState = {
+	difficulty: Difficulty;
 	board: MsTile[][];
 	flagsLeft: number;
 	stage: "start" | "playing" | "won" | "lost";
 };
 
-export function newMsGame(): MsGameState {
+function getGameConfig(difficulty: Difficulty) {
+	switch (difficulty) {
+		case "EASY":
+			return { width: 10, height: 8, numMines: 10 };
+		case "MEDIUM":
+			return { width: 18, height: 14, numMines: 40 };
+		case "HARD":
+			return { width: 24, height: 20, numMines: 99 };
+	}
+}
+
+export function newMsGame(difficulty: Difficulty): MsGameState {
+	const gameConfig = getGameConfig(difficulty);
 	return {
-		board: Array.from({ length: BOARD_HEIGHT }, () =>
-			Array.from({ length: BOARD_WIDTH }, () => ({ type: 0, state: "unflagged" }))
+		difficulty,
+		board: Array.from({ length: gameConfig.height }, () =>
+			Array.from({ length: gameConfig.width }, () => ({
+				type: 0,
+				state: "unflagged",
+			}))
 		),
-		flagsLeft: NUM_MINES,
+		flagsLeft: gameConfig.numMines,
 		stage: "start",
 	};
 }
@@ -37,9 +57,11 @@ export function newMsGame(): MsGameState {
  * See the [React docs on Immer](https://react.dev/learn/extracting-state-logic-into-a-reducer#writing-concise-reducers-with-immer) for more info
  */
 export function msReducer(gameState: MsGameState, action: MsAction): void {
+	const gameConfig = getGameConfig(gameState.difficulty);
+
 	switch (action.type) {
 		case "reveal tile": {
-			const { row: r, col: c } = action;
+			const { row: r, col: c, timestampInMs } = action;
 
 			if (gameState.board[r][c].type === "mine") {
 				onMineClicked(gameState, r, c);
@@ -49,8 +71,11 @@ export function msReducer(gameState: MsGameState, action: MsAction): void {
 				} else {
 					gameState.board[r][c].state = "revealed";
 				}
-				if (numUnrevealedTiles(gameState.board) === NUM_MINES) {
+				if (
+					numUnrevealedTiles(gameState.board) === gameConfig.numMines
+				) {
 					gameState.stage = "won";
+					addLeaderboardEntry(timestampInMs, gameState.difficulty);
 				}
 			}
 
@@ -71,30 +96,42 @@ export function msReducer(gameState: MsGameState, action: MsAction): void {
 			gameState.stage = "playing";
 
 			const minePlacements = shuffledArray(
-				Array.from({ length: BOARD_WIDTH * BOARD_HEIGHT - 9 }).map((_, i) => i < NUM_MINES)
+				Array.from({
+					length: gameConfig.width * gameConfig.height - 9,
+				}).map((_, i) => i < gameConfig.numMines)
 			);
 
 			// Place the mines
 			let minesPlaced = 0;
 			let tilesVisited = 0;
-			minePlacing: for (let r = 0; r < BOARD_HEIGHT; r++) {
-				for (let c = 0; c < BOARD_WIDTH; c++) {
+
+			minePlacing: for (let r = 0; r < gameConfig.height; r++) {
+				for (let c = 0; c < gameConfig.width; c++) {
 					// gaurantee that the clicked squre will be a 0
-					if (Math.abs(action.row - r) <= 1 && Math.abs(action.col - c) <= 1) continue;
+					if (
+						Math.abs(action.row - r) <= 1 &&
+						Math.abs(action.col - c) <= 1
+					)
+						continue;
 
 					if (minePlacements[tilesVisited++]) {
 						gameState.board[r][c].type = "mine";
 						minesPlaced++;
-						if (minesPlaced === NUM_MINES) break minePlacing;
+						if (minesPlaced === gameConfig.numMines)
+							break minePlacing;
 					}
 				}
 			}
 
 			// Calculate the number of adjacent mines for each tile
-			for (let r = 0; r < BOARD_HEIGHT; r++) {
-				for (let c = 0; c < BOARD_WIDTH; c++) {
+			for (let r = 0; r < gameConfig.height; r++) {
+				for (let c = 0; c < gameConfig.width; c++) {
 					if (gameState.board[r][c].type !== "mine") {
-						gameState.board[r][c].type = numAdjacentMines(gameState.board, r, c);
+						gameState.board[r][c].type = numAdjacentMines(
+							gameState.board,
+							r,
+							c
+						);
 					}
 				}
 			}
@@ -104,10 +141,11 @@ export function msReducer(gameState: MsGameState, action: MsAction): void {
 			break;
 		}
 		case "new game": {
-			const newState = newMsGame();
+			const newState = newMsGame(action.difficulty);
 			gameState.board = newState.board;
 			gameState.flagsLeft = newState.flagsLeft;
 			gameState.stage = newState.stage;
+			gameState.difficulty = newState.difficulty;
 			break;
 		}
 	}
@@ -119,12 +157,18 @@ function onMineClicked(gameState: MsGameState, r: number, c: number) {
 	for (let r = 0; r < gameState.board.length; r++) {
 		for (let c = 0; c < gameState.board[0].length; c++) {
 			// reveal all the unflagged mines
-			if (gameState.board[r][c].type === "mine" && gameState.board[r][c].state === "unflagged") {
+			if (
+				gameState.board[r][c].type === "mine" &&
+				gameState.board[r][c].state === "unflagged"
+			) {
 				gameState.board[r][c].state = "revealed";
 			}
 
 			// mark all the incorrectly flagged tiles
-			if (gameState.board[r][c].type !== "mine" && gameState.board[r][c].state === "flagged") {
+			if (
+				gameState.board[r][c].type !== "mine" &&
+				gameState.board[r][c].state === "flagged"
+			) {
 				gameState.board[r][c].state = "flagged incorrectly";
 			}
 		}
@@ -155,7 +199,11 @@ function revealEmptyTile(gameState: MsGameState, r0: number, c0: number): void {
 		const [[r, c]] = queue.splice(0, 1);
 
 		// if its a mine (or already revealed), ignore it (dont reveal it)
-		if (gameState.board[r][c].type === "mine" || gameState.board[r][c].state === "revealed") continue;
+		if (
+			gameState.board[r][c].type === "mine" ||
+			gameState.board[r][c].state === "revealed"
+		)
+			continue;
 
 		// if its a flag, give the flag back
 		if (gameState.board[r][c].state === "flagged") gameState.flagsLeft += 1;
@@ -165,9 +213,11 @@ function revealEmptyTile(gameState: MsGameState, r0: number, c0: number): void {
 
 		// if its a 0, queue its neighbors
 		if (gameState.board[r][c].type === 0) {
-			getIndexedNeighbors(gameState.board, r, c).forEach(({ val, nr, nc }) => {
-				queue.push([nr, nc]);
-			});
+			getIndexedNeighbors(gameState.board, r, c).forEach(
+				({ val, nr, nc }) => {
+					queue.push([nr, nc]);
+				}
+			);
 		}
 	}
 }

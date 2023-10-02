@@ -1,7 +1,7 @@
 import { Brightness5, Flag } from "@mui/icons-material";
-import { BOARD_HEIGHT, MsTile } from "../lib/minesweeper";
 import { clsx } from "clsx";
 import { useState } from "react";
+import { MsTile } from "../lib/minesweeper";
 
 export default function Tile({
 	board,
@@ -37,18 +37,18 @@ export default function Tile({
 	const isElevated = tile.state === "flagged" || tile.state === "unflagged";
 
 	/**
-	 * width and height of a tile, in `vh`
+	 * width and height of a tile, in `px`
 	 */
-	const tileSize = 100 / BOARD_HEIGHT;
+	const tileSize = 32;
 
 	return (
 		<div
 			tabIndex={0}
 			className="group relative leading-none"
 			style={{
-				width: `${tileSize}vh`,
-				height: `${tileSize}vh`,
-				fontSize: `${0.8 * tileSize}vh`,
+				width: `${tileSize}px`,
+				height: `${tileSize}px`,
+				fontSize: `${0.8 * tileSize}px`,
 			}}
 		>
 			{isElevated && <div className="absolute inset-0 z-10 [box-shadow:_3px_4px_5px_#0005]" />}
@@ -88,7 +88,7 @@ export default function Tile({
 			>
 				{(tile.state === "revealed" || tile.state === "clicked mine" || tile.state === "flagged incorrectly") &&
 					(tile.type === "mine" ? (
-						<Brightness5 style={{ width: `${tileSize}vh`, height: `${tileSize}vh` }} className="scale-75" />
+						<Brightness5 style={{ width: `${tileSize}px`, height: `${tileSize}px` }} className="scale-75" />
 					) : (
 						tile.type !== 0 && tile.type
 					))}
@@ -97,7 +97,7 @@ export default function Tile({
 			<div className={clsx("pointer-events-none absolute inset-0", isElevated && "z-20")}>
 				{(tile.state === "flagged" || tile.state === "flagged incorrectly") && (
 					<Flag
-						style={{ width: `${tileSize}vh`, height: `${tileSize}vh` }}
+						style={{ width: `${tileSize}px`, height: `${tileSize}px` }}
 						className={clsx(
 							"scale-100 text-red-600 transition-transform group-hover:scale-90",
 							tile.state === "flagged incorrectly" && "opacity-80"

@@ -1,36 +1,37 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // Custom stopwatch hook
 export function useStopwatch() {
-	const [isRunning, setIsRunning] = useState(false);
 	const [time, setTime] = useState(0);
+	const [isRunning, setIsRunning] = useState(false);
 
-	useEffect(() => {
-		let interval: any;
+	const intervalRef = useRef<any>(null);
 
-		if (isRunning) {
-			interval = setInterval(() => {
-				setTime((prevTime) => prevTime + 1);
-			}, 1000);
-		} else {
-			clearInterval(interval);
-		}
+	function start() {
+		if (isRunning) return;
 
-		return () => clearInterval(interval);
-	}, [isRunning]);
-
-	const start = () => {
 		setIsRunning(true);
-	};
+		intervalRef.current = setInterval(() => {
+			setTime((prevTime) => prevTime + 100);
+		}, 100);
+	}
 
-	const stop = () => {
+	function stop() {
+		if (!isRunning) return;
+
 		setIsRunning(false);
-	};
+		clearInterval(intervalRef.current);
+	}
 
-	const reset = () => {
+	function reset() {
+		stop();
 		setTime(0);
-		setIsRunning(false);
-	};
+	}
+
+	// stop on dismount to prevent a memory leak
+	useEffect(() => {
+		return stop;
+	}, []);
 
 	return { time, isRunning, start, stop, reset };
 }

@@ -4,9 +4,11 @@ import Tile from "./Tile";
 export default function board({
 	msGameState,
 	dispatch,
+	timeInMs,
 }: {
 	msGameState: MsGameState;
 	dispatch: (value: MsAction) => void;
+	timeInMs: number;
 }) {
 	function leftClick(row: number, col: number) {
 		if (msGameState.stage === "won" || msGameState.stage === "lost") {
@@ -15,9 +17,9 @@ export default function board({
 		const { state } = msGameState.board[row][col];
 		if (state === "unflagged") {
 			if (msGameState.stage === "start") {
-				dispatch({ type: "start", row, col });
+				dispatch({ type: "start", row, col, timestampInMs: timeInMs });
 			} else {
-				dispatch({ type: "reveal tile", row, col });
+				dispatch({ type: "reveal tile", row, col, timestampInMs: timeInMs });
 			}
 		}
 	}
@@ -29,14 +31,14 @@ export default function board({
 
 		const { state } = msGameState.board[row][col];
 		if (state !== "revealed") {
-			dispatch({ type: "toggle flag", row, col });
+			dispatch({ type: "toggle flag", row, col, timestampInMs: timeInMs });
 		}
 	}
 
 	return (
 		<div>
 			{msGameState.board.map((row, r) => (
-				<div key={r} className="flex">
+				<div key={r} className="flex bg-white">
 					{row.map((tile, c) => (
 						<div key={c}>
 							<Tile

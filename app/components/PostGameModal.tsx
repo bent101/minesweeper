@@ -1,5 +1,5 @@
 import { EmojiEvents, Replay, Timer } from "@mui/icons-material";
-import { formatTime } from "../lib/utils";
+import { formatDuration } from "../lib/utils";
 
 export default function PostGameModal({
 	outcome,
@@ -17,11 +17,11 @@ export default function PostGameModal({
 			<div className="flex flex-1 items-center justify-around text-4xl font-semibold text-white">
 				<div className="flex flex-col items-center gap-4">
 					<Timer style={{ width: "3.5rem", height: "3.5rem" }} />
-					<div>{score === null || outcome === "lost" ? "---" : formatTime(score)}</div>
+					<div>{score === null || outcome === "lost" ? "---" : formatDuration(score)}</div>
 				</div>
 				<div className="flex flex-col items-center gap-4">
 					<EmojiEvents style={{ width: "3.5rem", height: "3.5rem" }} />
-					<div>{highScore === null ? "---" : formatTime(highScore)}</div>
+					<div>{highScore === null ? "---" : formatDuration(highScore)}</div>
 				</div>
 			</div>
 			<button onMouseDown={newGame} className="rounded-xl py-4 text-xl text-white hover:bg-white/10">
