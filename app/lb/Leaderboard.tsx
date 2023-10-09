@@ -56,7 +56,7 @@ export default function Leaderboard({
 						<div className="w-64 font-mono tracking-wide text-white">
 							{formatDuration(entry.timeInMs)}
 						</div>
-						<div className="font-semibold tracking-wide text-white/50">
+						<div className="font-semibold w-32 text-right tracking-wide text-white/50">
 							{formatDate(entry.createdAt)}
 						</div>
 					</li>
