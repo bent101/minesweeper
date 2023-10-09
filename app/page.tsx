@@ -12,16 +12,20 @@ import { useStopwatch } from "./lib/stopwatch";
 import { formatDuration } from "./lib/utils";
 import DifficultySwitcher from "./components/DifficultySwitcher";
 import Link from "next/link";
+import { Difficulty } from "@prisma/client";
 
 export default function Home() {
 	const [msGameState, dispatch] = useImmerReducer(
 		msReducer,
 		newMsGame("MEDIUM")
 	);
-	const [highScore, setHighScore] = useLocalStorage<number | null>(
-		"highScore",
-		null
-	);
+	const [highScore, setHighScore] = useLocalStorage<
+		Record<Difficulty, number | null>
+	>("highScores", {
+		EASY: null,
+		MEDIUM: null,
+		HARD: null,
+	});
 	const stopwatch = useStopwatch();
 
 	useEffect(() => {
@@ -34,13 +38,28 @@ export default function Home() {
 				break;
 			case "won":
 				stopwatch.stop();
-				setHighScore(Math.min(highScore ?? Infinity, stopwatch.time));
+				const newHighScore = Math.min(
+					highScore[msGameState.difficulty] ?? Infinity,
+					stopwatch.time
+				);
+				setHighScore((prev) => {
+					if (!prev) return;
+					const next = prev;
+					next[msGameState.difficulty] = newHighScore;
+					return next;
+				});
 				break;
 			case "lost":
 				stopwatch.stop();
 				break;
 		}
-	}, [msGameState.stage, stopwatch, highScore, setHighScore]);
+	}, [
+		msGameState.stage,
+		stopwatch,
+		highScore,
+		setHighScore,
+		msGameState.difficulty,
+	]);
 
 	const newGame = useCallback(() => {
 		dispatch({ type: "new game", difficulty: msGameState.difficulty });
@@ -57,7 +76,7 @@ export default function Home() {
 		}
 
 		function handleMouseDown(this: Window, event: MouseEvent) {
-			console.log(event.button);
+			// console.log(event.button);
 		}
 
 		window.addEventListener("keydown", handleKeydown);
@@ -111,7 +130,7 @@ export default function Home() {
 					<PostGameModal
 						outcome={msGameState.stage}
 						score={stopwatch.time}
-						highScore={highScore}
+						highScore={highScore[msGameState.difficulty]}
 						newGame={newGame}
 					/>
 				)}

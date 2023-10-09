@@ -66,7 +66,7 @@ export default function Tile({
 				// onMouseOver={() => setHovering(true)}
 				// onMouseOut={() => setHovering(false)}
 				onKeyDown={(e) => {
-					console.log("tile keydown");
+					// console.log("tile keydown");
 				}}
 				onContextMenu={(e) => {
 					e.preventDefault();
