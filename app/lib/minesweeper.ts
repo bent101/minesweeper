@@ -75,7 +75,8 @@ export function msReducer(gameState: MsGameState, action: MsAction): void {
 					numUnrevealedTiles(gameState.board) === gameConfig.numMines
 				) {
 					gameState.stage = "won";
-					addLeaderboardEntry(timestampInMs, gameState.difficulty);
+					const curDifficulty = gameState.difficulty;
+					setTimeout(() => addLeaderboardEntry(timestampInMs, curDifficulty), 0);
 				}
 			}
 
