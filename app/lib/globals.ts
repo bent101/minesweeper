@@ -6,4 +6,4 @@ export const difficulties = [
 	"HARD",
 ] as const satisfies readonly Difficulty[];
 
-export const leaderboardFilters = ["ALL", ...difficulties] as const;
+export const leaderboardFilters = [...difficulties] as const;

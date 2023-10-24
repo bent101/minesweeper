@@ -19,7 +19,7 @@ export default function Leaderboard({
 	);
 
 	const [selectedFilter, setSelectedFilter] =
-		useState<(typeof leaderboardFilters)[number]>("ALL");
+		useState<(typeof leaderboardFilters)[number]>("EASY");
 
 	const curLeaderboard = leaderboards[selectedFilter];
 
