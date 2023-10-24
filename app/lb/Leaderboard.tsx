@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { formatDate, formatDuration, toTitleCase } from "../lib/utils";
-import { leaderboardFilters } from "../lib/globals";
+import { difficulties } from "../lib/globals";
 import { useState } from "react";
 
 export default function Leaderboard({
@@ -15,11 +15,11 @@ export default function Leaderboard({
 	}[][];
 }) {
 	const leaderboards = Object.fromEntries(
-		leaderboardFilters.map((filter, i) => [filter, leaderboardsData[i]])
+		difficulties.map((filter, i) => [filter, leaderboardsData[i]])
 	);
 
 	const [selectedFilter, setSelectedFilter] =
-		useState<(typeof leaderboardFilters)[number]>("EASY");
+		useState<(typeof difficulties)[number]>("EASY");
 
 	const curLeaderboard = leaderboards[selectedFilter];
 
@@ -29,7 +29,7 @@ export default function Leaderboard({
 				Leaderboard
 			</h1>
 			<div className="flex gap-2 pl-14 text-lg font-semibold">
-				{leaderboardFilters.map((filter) => (
+				{difficulties.map((filter) => (
 					<button
 						onClick={() => setSelectedFilter(filter)}
 						key={filter}

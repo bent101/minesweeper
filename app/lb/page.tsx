@@ -2,23 +2,13 @@
 
 import prisma from "@/prisma/prisma";
 import Link from "next/link";
-import { leaderboardFilters } from "../lib/globals";
+import { difficulties } from "../lib/globals";
 import Leaderboard from "./Leaderboard";
 
 export default async function Page() {
 	const leaderboardsData = await Promise.all(
-		leaderboardFilters.map((leaderboard) =>
-			leaderboard === "ALL"
-				? prisma.leaderboardEntry.findMany({
-						select: {
-							timeInMs: true,
-							createdAt: true,
-							id: true,
-						},
-						orderBy: { timeInMs: "asc" },
-						take: 50,
-				  })
-				: prisma.leaderboardEntry.findMany({
+		difficulties.map((leaderboard) =>
+				prisma.leaderboardEntry.findMany({
 						select: {
 							timeInMs: true,
 							createdAt: true,
